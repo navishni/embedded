@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block page %}analytics{% endblock %}
+{% block title %}Analytics · Sentinel{% endblock %}
+{% block heading %}Analytics{% endblock %}
+{% block content %}
+<div class="section-head">
+  <p class="muted">Intrusion patterns over time. Times are shown in the server's local time.</p>
+  <div class="segmented" id="range">
+    <button data-days="1">24 h</button><button data-days="7" class="active">7 days</button>
+    <button data-days="30">30 days</button><button data-days="90">90 days</button>
+  </div>
+</div>
+
+<section class="kpis">
+  <div class="card kpi danger"><div><div class="kpi-label">Incidents</div><div class="kpi-value" id="a-total">–</div></div></div>
+  <div class="card kpi"><div><div class="kpi-label">People detected in zone</div><div class="kpi-value" id="a-people">–</div></div></div>
+  <div class="card kpi"><div><div class="kpi-label">Avg. confidence</div><div class="kpi-value" id="a-conf">–</div></div></div>
+  <div class="card kpi"><div><div class="kpi-label">Avg. time to acknowledge</div><div class="kpi-value" id="a-ack">–</div></div></div>
+  <div class="card kpi ok"><div><div class="kpi-label">Recorded on blockchain</div><div class="kpi-value" id="a-chain">–</div></div></div>
+</section>
+
+<div class="chart-grid">
+  <div class="card span-2"><h3>Incidents per day</h3><div id="c-daily" class="chart tall"></div></div>
+  <div class="card"><h3>By hour of day</h3><p class="muted small">When intrusions happen most</p><div id="c-hourly" class="chart"></div></div>
+  <div class="card"><h3>By day of week</h3><div id="c-weekday" class="chart"></div></div>
+  <div class="card"><h3>Detection confidence</h3><div id="c-conf" class="chart donut-wrap"></div></div>
+  <div class="card"><h3>Per camera</h3><div id="c-cams" class="chart"></div></div>
+</div>
+{% endblock %}

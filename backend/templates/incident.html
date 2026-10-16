@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block page %}incident{% endblock %}
+{% block title %}{{ inc.id }} · Sentinel{% endblock %}
+{% block heading %}<a href="{{ url_for('incidents_page') }}" class="crumb">Incidents</a> / {{ inc.id }}{% endblock %}
+{% block content %}
+<div class="incident-grid" data-incident="{{ inc.id }}">
+  <div class="card">
+    <div class="toolbar">
+      <label class="toggle"><input type="checkbox" class="switch small" id="annotated" checked> Show detections &amp; zone</label>
+      <span class="grow"></span>
+      <a class="btn" href="{{ url_for('incident_report', incident_id=inc.id) }}">{{ icon('file') }} PDF report</a>
+    </div>
+    <div class="evidence-wrap"><img id="evidence" class="evidence" alt="Evidence for {{ inc.id }}"
+         data-src="{{ url_for('evidence', incident_id=inc.id) }}"></div>
+    <p class="muted small">Decrypted on request from AES-256-GCM storage. Every view is written to the audit log.</p>
+  </div>
+
+  <div class="side-stack">
+    <div class="card details">
+      <div class="status-line">
+        {% if inc.acknowledged_by %}<span class="badge ok">{{ icon('check') }} Acknowledged</span>
+        {% else %}<span class="badge open">Open</span>{% endif %}
+        <span class="badge {{ inc.chain_status }}">{{ icon('cube') }} {{ inc.chain_status }}</span>
+      </div>
+      <dl>
+        <dt>Captured</dt><dd data-ts="{{ inc.timestamp }}">{{ inc.timestamp }}</dd>
+        <dt>Camera</dt><dd>{{ inc.camera_id }}</dd>
+        <dt>People in zone</dt><dd>{{ inc.person_count }}</dd>
+        <dt>Max confidence</dt><dd>
+          <div class="meter"><span data-width="{{ (inc.max_confidence * 100) | round | int }}"></span></div>
+          {{ '%.0f' % (inc.max_confidence * 100) }}%</dd>
+        <dt>Notification</dt><dd>{{ 'Sent' if inc.notified else 'Not sent' }}</dd>
+        <dt>Acknowledged</dt><dd>{% if inc.acknowledged_by %}{{ inc.acknowledged_by }}<br><span class="muted small">{{ inc.acknowledged_at }}</span>{% else %}—{% endif %}</dd>
+      </dl>
+      <div class="actions">
+        {% if not inc.acknowledged_by %}<button class="btn" id="ack-btn">{{ icon('check') }} Acknowledge</button>{% endif %}
+        <button class="btn primary" id="verify-btn">{{ icon('shield') }} Verify integrity</button>
+      </div>
+      <div id="verify-result" class="verify" hidden></div>
+    </div>
+
+    <div class="card">
+      <h3>Blockchain proof</h3>
+      <dl class="hashes">
+        <dt>Evidence SHA-256</dt><dd class="mono">{{ inc.evidence_hash }}</dd>
+        <dt>Transaction</dt><dd class="mono">{{ inc.chain_tx or 'not yet recorded' }}</dd>
+      </dl>
+    </div>
+  </div>
+</div>
+{% endblock %}

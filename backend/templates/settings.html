@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block page %}settings{% endblock %}
+{% block title %}Arming &amp; schedule · Sentinel{% endblock %}
+{% block heading %}Arming &amp; schedule{% endblock %}
+{% block content %}
+<div class="settings-grid">
+  <div class="card">
+    <h2>System status</h2>
+    <div class="arm-hero" id="arm-hero">
+      <div class="arm-hero-icon">{{ icon('shield') }}</div>
+      <div><div class="arm-hero-state" id="arm-state">–</div><div class="muted" id="arm-reason"></div></div>
+    </div>
+    <label class="switch-row">
+      <span><strong>Master switch</strong><br><span class="muted small">When off, the system only watches: no incidents, alarms or alerts.</span></span>
+      <input type="checkbox" class="switch" id="armed-switch">
+    </label>
+  </div>
+
+  <div class="card">
+    <h2>Armed-hours schedule</h2>
+    <label class="switch-row">
+      <span><strong>Only arm during these hours</strong><br><span class="muted small">e.g. 20:00 – 06:00 for night-time monitoring. Overnight ranges are supported.</span></span>
+      <input type="checkbox" class="switch" id="sched-enabled">
+    </label>
+    <div class="row-2">
+      <label>Start <input type="time" id="sched-start"></label>
+      <label>End <input type="time" id="sched-end"></label>
+    </div>
+    <div class="days" id="sched-days">
+      {% for d in ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] %}
+      <label class="day"><input type="checkbox" value="{{ loop.index0 }}"><span>{{ d }}</span></label>
+      {% endfor %}
+    </div>
+    <div class="form-actions">
+      <span class="muted small" id="sched-msg"></span>
+      <button class="btn primary" id="sched-save">Save schedule</button>
+    </div>
+  </div>
+
+  <div class="card span-2">
+    <h2>System information</h2>
+    <dl class="info">
+      <dt>AI model</dt><dd>{{ cfg.YOLO_MODEL }} · confidence ≥ {{ cfg.CONFIDENCE }}</dd>
+      <dt>Alert cooldown</dt><dd>{{ cfg.ALERT_COOLDOWN_S }} s per camera</dd>
+      <dt>Cameras</dt><dd>{{ cfg.CAMERA_KEYS | length }} configured ({{ cfg.CAMERA_KEYS.keys() | sort | join(', ') }})</dd>
+      <dt>Phone notifications</dt><dd>{{ 'ntfy enabled' if notifications else 'disabled (NTFY_TOPIC not set)' }}</dd>
+      <dt>Blockchain</dt><dd>{{ cfg.ETH_RPC_URL }} · contract {{ 'deployed' if chain_info else 'NOT deployed' }}</dd>
+      <dt>Evidence</dt><dd>AES-256-GCM encrypted, SHA-256 anchored on chain</dd>
+    </dl>
+    <p class="muted small">These values come from <code>backend/.env</code>; restart the server after changing them.</p>
+  </div>
+</div>
+{% endblock %}

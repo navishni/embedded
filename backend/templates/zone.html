@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block page %}zone{% endblock %}
+{% block title %}Restricted zone · Sentinel{% endblock %}
+{% block heading %}Restricted zone{% endblock %}
+{% block content %}
+<p class="muted">Click on the camera image to place the corners of the restricted area. A person counts as an
+  intruder when the bottom-centre of their box (their feet) falls inside the polygon.</p>
+<div class="card">
+  <div class="toolbar">
+    <label>Camera
+      <select id="zone-camera">{% for cam in cameras %}<option>{{ cam }}</option>{% endfor %}</select>
+    </label>
+    <span class="grow"></span>
+    <span id="zone-msg" class="muted small"></span>
+    <button class="btn ghost" id="zone-undo">Undo point</button>
+    <button class="btn ghost" id="zone-clear">Clear</button>
+    <button class="btn primary" id="zone-save">{{ icon('check') }} Save zone</button>
+  </div>
+  <div class="zone-stage">
+    <canvas id="zone-canvas" width="640" height="480"></canvas>
+  </div>
+  <p class="muted small">If no image is shown, the camera hasn't sent a frame yet. You can still draw on the grid.</p>
+</div>
+{% endblock %}

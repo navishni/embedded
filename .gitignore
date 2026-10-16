@@ -1,0 +1,18 @@
+# secrets
+backend/.env
+backend/certs/
+firmware/esp32cam_intrusion/secrets.h
+
+# runtime data (encrypted evidence, database)
+backend/data/
+backend/*.pt
+
+# environments / builds
+backend/.venv/
+__pycache__/
+.pytest_cache/
+blockchain/node_modules/
+blockchain/artifacts/
+blockchain/cache/
+blockchain/typechain-types/
+blockchain/deployments/

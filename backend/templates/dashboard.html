@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block page %}dashboard{% endblock %}
+{% block heading %}Dashboard{% endblock %}
+{% block content %}
+<section class="kpis">
+  <div class="card kpi danger"><div class="kpi-icon">{{ icon('alert') }}</div>
+    <div><div class="kpi-label">Open alerts</div><div class="kpi-value" id="s-open">–</div></div></div>
+  <div class="card kpi"><div class="kpi-icon">{{ icon('clock') }}</div>
+    <div><div class="kpi-label">Last 24 hours</div><div class="kpi-value" id="s-24h">–</div></div></div>
+  <div class="card kpi"><div class="kpi-icon">{{ icon('file') }}</div>
+    <div><div class="kpi-label">Total incidents</div><div class="kpi-value" id="s-total">–</div></div></div>
+  <div class="card kpi ok"><div class="kpi-icon">{{ icon('cube') }}</div>
+    <div><div class="kpi-label">On blockchain</div><div class="kpi-value" id="s-chain">–</div></div></div>
+  <div class="card kpi"><div class="kpi-icon">{{ icon('video') }}</div>
+    <div><div class="kpi-label">Cameras online</div><div class="kpi-value" id="s-cams">–</div></div></div>
+</section>
+
+<p class="notice" id="notify-warning" hidden>{{ icon('bell') }} Phone notifications are off: set <code>NTFY_TOPIC</code> in <code>backend/.env</code>.</p>
+
+<div class="dash-grid">
+  <section>
+    <div class="section-head"><h2>Cameras</h2><a href="{{ url_for('live_page') }}" class="link">Open live view →</a></div>
+    <div class="cameras">
+      {% for cam in cameras %}
+      <div class="card camera" data-camera="{{ cam }}">
+        <div class="cam-head"><strong>{{ icon('video') }} {{ cam }}</strong> <span class="badge" data-cam-status>offline</span></div>
+        <div class="cam-frame"><img alt="Live view {{ cam }}" data-cam-img><div class="cam-placeholder">{{ icon('video') }}<span>Waiting for camera…</span></div></div>
+        <div class="muted small" data-cam-info>No frames received yet.</div>
+      </div>
+      {% else %}
+      <p class="muted">No cameras configured. Add one to CAMERA_KEYS in backend/.env.</p>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Activity · last 24 h</h2><a href="{{ url_for('analytics_page') }}" class="link">Analytics →</a></div>
+    <div class="card"><div id="chart-24h" class="chart"></div></div>
+
+    <div class="section-head"><h2>Recent incidents</h2>
+      <a href="{{ url_for('incidents_page') }}" class="link">View all →</a></div>
+    <div class="card list" id="recent-list"><div class="muted pad">Loading…</div></div>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Users &amp; audit · Sentinel{% endblock %}
+{% block heading %}Users &amp; audit{% endblock %}
+{% block content %}
+<div class="two-col">
+  <div class="card table-wrap">
+    <div class="card-head"><h2>Accounts</h2></div>
+    <table>
+      <thead><tr><th>User</th><th>Role</th><th>Created</th><th></th></tr></thead>
+      <tbody>
+      {% for u in users %}
+        <tr>
+          <td><span class="avatar">{{ u.username[:1] | upper }}</span> {{ u.username }}</td>
+          <td><span class="badge {{ u.role }}">{{ u.role }}</span></td>
+          <td class="small muted">{{ u.created_at[:16] | replace('T', ' ') }}</td>
+          <td class="right">{% if u.username != current_user.username %}
+            <form method="post" action="{{ url_for('users_delete', username=u.username) }}" class="inline confirm"
+                  data-confirm="Delete user {{ u.username }}?">
+              <input type="hidden" name="csrf" value="{{ csrf_token }}">
+              <button class="btn ghost danger small">Delete</button>
+            </form>{% else %}<span class="muted small">you</span>{% endif %}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h2>Add user</h2>
+    <form method="post" action="{{ url_for('users_create') }}">
+      <input type="hidden" name="csrf" value="{{ csrf_token }}">
+      <label>Username <input name="username" required></label>
+      <label>Password <input name="password" type="password" minlength="10" required></label>
+      <label>Role
+        <select name="role">{% for r in roles %}<option value="{{ r }}" {{ 'selected' if r == 'security' }}>{{ r }}</option>{% endfor %}</select>
+      </label>
+      <p class="muted small"><b>admin</b>: everything, including zone, arming, users and audit log.<br>
+        <b>security</b>: view, acknowledge, verify and export incidents.</p>
+      <button class="btn primary">Create user</button>
+    </form>
+  </div>
+</div>
+
+<div class="section-head"><h2>Audit log</h2><span class="muted small">latest 50 events</span></div>
+<div class="card table-wrap">
+  <table>
+    <thead><tr><th>Time (UTC)</th><th>Who</th><th>Action</th><th>Detail</th></tr></thead>
+    <tbody>
+    {% for a in audit %}
+      <tr><td class="small muted">{{ a.at[:19] | replace('T', ' ') }}</td><td>{{ a.username }}</td>
+        <td><span class="tag">{{ a.action | replace('_', ' ') }}</span></td><td class="small mono">{{ a.detail }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

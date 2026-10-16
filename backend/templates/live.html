@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block page %}live{% endblock %}
+{% block title %}Live view · Sentinel{% endblock %}
+{% block heading %}Live view{% endblock %}
+{% block content %}
+<div class="legend-row muted small">
+  <span><i class="swatch red"></i> person inside zone</span>
+  <span><i class="swatch green"></i> person outside zone</span>
+  <span><i class="swatch zone"></i> restricted zone</span>
+  <span><i class="swatch dot"></i> feet point used for the zone check</span>
+</div>
+{% for cam in cameras %}
+<div class="card live-card" data-live-camera="{{ cam }}">
+  <div class="cam-head"><strong>{{ icon('video') }} {{ cam }}</strong>
+    <span class="live-meta"><span class="rec" data-rec hidden>● LIVE</span> <span class="badge" data-cam-status>connecting…</span></span></div>
+  <div class="cam-frame live">
+    <img class="live-stream" alt="Live stream {{ cam }}" src="{{ url_for('api_stream', camera_id=cam) }}">
+  </div>
+  <div class="live-stats">
+    <div><span class="muted small">Visible</span><strong data-people>–</strong></div>
+    <div><span class="muted small">In zone</span><strong data-intruders>–</strong></div>
+    <div><span class="muted small">Last frame</span><strong data-last>–</strong></div>
+  </div>
+</div>
+{% else %}
+<p class="muted">No cameras configured.</p>
+{% endfor %}
+{% endblock %}

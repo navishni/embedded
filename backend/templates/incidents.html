@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block page %}incidents{% endblock %}
+{% block title %}Incidents · Sentinel{% endblock %}
+{% block heading %}Incidents{% endblock %}
+{% block content %}
+<form class="card filters" id="filters">
+  <label class="grow">Search ID
+    <span class="input-icon">{{ icon('search') }}<input name="q" placeholder="INC-2026…"></span></label>
+  <label>Status
+    <select name="status"><option value="">All</option><option value="open">Open</option><option value="acknowledged">Acknowledged</option></select></label>
+  <label>Camera
+    <select name="camera"><option value="">All</option>{% for c in cameras %}<option>{{ c }}</option>{% endfor %}</select></label>
+  <label>From <input type="date" name="from"></label>
+  <label>To <input type="date" name="to"></label>
+  <div class="filter-actions">
+    <button type="reset" class="btn ghost">Reset</button>
+    <a class="btn" id="export-csv" href="{{ url_for('export_csv') }}">{{ icon('download') }} Export CSV</a>
+    <button type="button" class="btn danger-soft" id="ack-all">{{ icon('check') }} Acknowledge all</button>
+  </div>
+</form>
+
+<div class="card table-wrap">
+  <table class="incidents">
+    <thead><tr><th>Time</th><th>Incident</th><th>Camera</th><th>People</th><th>Confidence</th><th>Blockchain</th><th>Status</th><th></th></tr></thead>
+    <tbody id="incident-rows"><tr><td colspan="8" class="muted">Loading…</td></tr></tbody>
+  </table>
+</div>
+<p class="muted small" id="result-count"></p>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block heading %}Error{% endblock %}
+{% macro body() %}
+<div class="card empty-state">
+  <div class="big-code">{{ error.code }}</div>
+  <h2>{{ error.name }}</h2>
+  <p class="muted">{{ error.description }}</p>
+  <a class="btn" href="{{ url_for('dashboard') }}">Back to dashboard</a>
+</div>
+{% endmacro %}
+{% block content %}{{ body() }}{% endblock %}
+{% block bare %}<div class="login-wrap">{{ body() }}</div>{% endblock %}
